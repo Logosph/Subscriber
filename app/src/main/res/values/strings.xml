@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">Subscriber</string>
+    <string name="app_name" translatable="false">Subscriber</string>
+    <string name="new_subscription">New subscription</string>
+    <string name="name">Name</string>
+    <string name="description">Description - optional</string>
+    <string name="billing_period">Billing period</string>
+    <string name="every">every</string>
+    <string name="period">Period</string>
+    <string-array name="periods">
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="costs">Costs</string>
+    <string name="currency">Currency</string>
+    <string name="note_optional">Note - optional</string>
+    <string name="pricing">Pricing</string>
+    <string name="general_information">General information</string>
+    <string name="add_subscription">Add subscription</string>
+    <string name="first_payment_date">First payment date</string>
+
 </resources>
