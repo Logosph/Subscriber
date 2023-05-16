@@ -11,8 +11,10 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.subscriber.databinding.FragmentNewSubscriptionBinding;
+import com.example.subscriber.ui.viewmodels.NewSubscriptionFragmentViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
@@ -24,6 +26,7 @@ import java.util.TimeZone;
 
 public class NewSubscriptionFragment extends Fragment {
     FragmentNewSubscriptionBinding binding;
+    NewSubscriptionFragmentViewModel viewModel;
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     Boolean dateChosen = false;
 
@@ -31,115 +34,25 @@ public class NewSubscriptionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentNewSubscriptionBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(NewSubscriptionFragmentViewModel.class);
+
         binding.confirmButton.shrink();
 
-        binding.nameTextFieldInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (checkForFilled()) {
-                    binding.confirmButton.extend();
-                } else {
-                    binding.confirmButton.shrink();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        binding.everyTextFieldInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (checkForFilled()) {
-                    binding.confirmButton.extend();
-                } else {
-                    binding.confirmButton.shrink();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        binding.costTextFieldInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (checkForFilled()) {
-                    binding.confirmButton.extend();
-                } else {
-                    binding.confirmButton.shrink();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        binding.periodSpinnerInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (checkForFilled()) {
-                    binding.confirmButton.extend();
-                } else {
-                    binding.confirmButton.shrink();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        binding.currenciesSpinnerInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (checkForFilled()) {
-                    binding.confirmButton.extend();
-                } else {
-                    binding.confirmButton.shrink();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        addTextChangedListener(binding.nameTextFieldInput);
+        addTextChangedListener(binding.everyTextFieldInput);
+        addTextChangedListener(binding.costTextFieldInput);
+        addTextChangedListener(binding.periodSpinnerInput);
+        addTextChangedListener(binding.currenciesSpinnerInput);
 
         binding.dateButton.setOnClickListener(v -> {
-            MaterialDatePicker datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("SelectDate").setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build();
+            MaterialDatePicker datePicker = MaterialDatePicker
+                    .Builder
+                    .datePicker()
+                    .setTitleText("SelectDate")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .build();
 
-            datePicker.show(getParentFragmentManager(), "Hello");
+            datePicker.show(getParentFragmentManager(), "First payment date picker");
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 SimpleDateFormat fromDatePicker = new SimpleDateFormat("dd MMM yyyy");
                 SimpleDateFormat calendarToString = new SimpleDateFormat("dd.MM.yyyy");
@@ -149,15 +62,26 @@ public class NewSubscriptionFragment extends Fragment {
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
-                binding.dateButton.setText(String.format("First payment date is: %s", calendarToString.format(new Date(calendar.getTimeInMillis()))));
+                binding.dateButton.setText(String.format(
+                                "First payment date is: %s",
+                                calendarToString.format(new Date(calendar.getTimeInMillis()))
+                        )
+                );
                 dateChosen = true;
-                if (checkForFilled()) {
-                    binding.confirmButton.extend();
-                } else {
-                    binding.confirmButton.shrink();
-                }
+                viewModel.changeExtend(checkForFilled());
             });
         });
+
+        viewModel
+                .shouldExtend
+                .observe(getViewLifecycleOwner(), shouldExtend -> {
+                            if (shouldExtend) {
+                                binding.confirmButton.extend();
+                            } else {
+                                binding.confirmButton.shrink();
+                            }
+                        }
+                );
 
         return binding.getRoot();
     }
@@ -170,6 +94,40 @@ public class NewSubscriptionFragment extends Fragment {
                         !binding.periodSpinnerInput.getText().toString().isEmpty() &&
                         !binding.currenciesSpinnerInput.getText().toString().isEmpty() &&
                         dateChosen;
+    }
+
+    private void addTextChangedListener(com.google.android.material.textfield.TextInputEditText view) {
+        view.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.changeExtend(checkForFilled());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    private void addTextChangedListener(android.widget.AutoCompleteTextView view) {
+        view.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.changeExtend(checkForFilled());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
 }
