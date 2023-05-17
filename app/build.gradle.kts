@@ -35,10 +35,25 @@ android {
 
 dependencies {
     val navVersion = "2.5.3"
+    val room_version = "2.5.1"
 
-    // Java language implementation
+    // Reactivex java
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation("androidx.room:room-rxjava2:$room_version")
+
+    // Room ORM
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    // Navigation
     implementation("androidx.navigation:navigation-fragment:$navVersion")
     implementation("androidx.navigation:navigation-ui:$navVersion")
+
+    // JSON
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // Default
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

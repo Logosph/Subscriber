@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.subscriber.databinding.FragmentNewSubscriptionBinding;
 import com.example.subscriber.ui.viewmodels.NewSubscriptionFragmentViewModel;
@@ -36,14 +37,115 @@ public class NewSubscriptionFragment extends Fragment {
         binding = FragmentNewSubscriptionBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(NewSubscriptionFragmentViewModel.class);
 
+        // Set up start state of button
         binding.confirmButton.shrink();
 
-        addTextChangedListener(binding.nameTextFieldInput);
-        addTextChangedListener(binding.everyTextFieldInput);
-        addTextChangedListener(binding.costTextFieldInput);
-        addTextChangedListener(binding.periodSpinnerInput);
-        addTextChangedListener(binding.currenciesSpinnerInput);
+        // TextChangedListeners and OnClickListeners
+        binding.nameTextFieldInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.name = binding.nameTextFieldInput.getText().toString();
+                viewModel.changeExtend();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.everyTextFieldInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String temp = binding.everyTextFieldInput.getText().toString();
+                viewModel.every = Integer.valueOf(temp.isEmpty() ? "0" : temp);
+                viewModel.changeExtend();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.costTextFieldInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String temp = binding.costTextFieldInput.getText().toString();
+                viewModel.price = Double.valueOf(temp.isEmpty() ? "0.0" : temp);
+                viewModel.changeExtend();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.periodSpinnerInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.period = binding.periodSpinnerInput.getText().toString();
+                viewModel.changeExtend();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.currenciesSpinnerInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.currency = binding.currenciesSpinnerInput.getText().toString();
+                viewModel.changeExtend();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.descriptionTextFieldInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.description = binding.descriptionTextFieldInput.getText().toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.noteTextFieldInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewModel.note = binding.noteTextFieldInput.getText().toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         binding.dateButton.setOnClickListener(v -> {
             MaterialDatePicker datePicker = MaterialDatePicker
                     .Builder
@@ -67,10 +169,19 @@ public class NewSubscriptionFragment extends Fragment {
                                 calendarToString.format(new Date(calendar.getTimeInMillis()))
                         )
                 );
-                dateChosen = true;
-                viewModel.changeExtend(checkForFilled());
+
+                viewModel.dateChanged = true;
+                viewModel.date = calendar;
+                viewModel.changeExtend();
             });
         });
+        binding.confirmButton.setOnClickListener(v -> {
+            if (viewModel.onAddSubscription(getContext())) {
+                Navigation.findNavController(v).popBackStack();
+            }
+
+        });
+
 
         viewModel
                 .shouldExtend
@@ -85,49 +196,4 @@ public class NewSubscriptionFragment extends Fragment {
 
         return binding.getRoot();
     }
-
-    private Boolean checkForFilled() {
-        return
-                !binding.nameTextFieldInput.getText().toString().isEmpty() &&
-                        !binding.everyTextFieldInput.getText().toString().isEmpty() &&
-                        !binding.costTextFieldInput.getText().toString().isEmpty() &&
-                        !binding.periodSpinnerInput.getText().toString().isEmpty() &&
-                        !binding.currenciesSpinnerInput.getText().toString().isEmpty() &&
-                        dateChosen;
-    }
-
-    private void addTextChangedListener(com.google.android.material.textfield.TextInputEditText view) {
-        view.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                viewModel.changeExtend(checkForFilled());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    private void addTextChangedListener(android.widget.AutoCompleteTextView view) {
-        view.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                viewModel.changeExtend(checkForFilled());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
 }
