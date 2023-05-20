@@ -47,7 +47,7 @@ public class NewSubscriptionFragment extends Fragment {
             binding.noteTextFieldInput.setText(viewModel.subscriptionItem.getNote());
             binding.descriptionTextFieldInput.setText(viewModel.subscriptionItem.getDescription());
             binding.nameTextFieldInput.setText(viewModel.subscriptionItem.getName());
-            binding.pricing.setText(String.valueOf(viewModel.subscriptionItem.getPrice()));
+            binding.costTextFieldInput.setText(String.valueOf(viewModel.subscriptionItem.getPrice()));
             binding.everyTextFieldInput.setText(String.valueOf(viewModel.subscriptionItem.getEvery()));
             binding.periodSpinnerInput.setText(viewModel.subscriptionItem.getPeriod());
             binding.currenciesSpinnerInput.setText(viewModel.subscriptionItem.getCurrency());
