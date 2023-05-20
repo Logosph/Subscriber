@@ -12,6 +12,11 @@
         <item>Month</item>
         <item>Year</item>
     </string-array>
+    <string-array name="currencies">
+        <item>RUB</item>
+        <item>USD</item>
+        <item>EUR</item>
+    </string-array>
     <string name="day">Day</string>
     <string name="week">Week</string>
     <string name="month">Month</string>
@@ -23,5 +28,11 @@
     <string name="general_information">General information</string>
     <string name="add_subscription">Add subscription</string>
     <string name="first_payment_date">First payment date</string>
+    <string name="subscribes">Subscribes</string>
+    <string name="first_payment_date_is">First payment date is:</string>
+    <string name="payment_options">Payment options</string>
+    <string name="first_payment_date_header_edit">First payment date:</string>
+    <string name="delete">Delete</string>
+    <string name="are_you_sure">Are you sure you want to delete the subscription?</string>
 
 </resources>

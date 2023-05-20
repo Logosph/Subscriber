@@ -1,11 +1,10 @@
 package com.example.subscriber.ui.viewmodels;
 
 import android.content.Context;
-import android.view.View;
+import android.os.Bundle;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.Navigation;
 
 import com.example.subscriber.data.db.SubscriptionItem;
 import com.example.subscriber.data.repositories.SubscriptionDBRepository;
@@ -27,10 +26,30 @@ public class NewSubscriptionFragmentViewModel extends ViewModel {
     public String note = "";
     public Calendar date = Calendar.getInstance();
     public String serializedDate = "";
+    public Bundle bundle;
+    public SubscriptionItem subscriptionItem;
 
     @Override
     protected void onCleared() {
         super.onCleared();
+    }
+
+    public void getFromBundle() {
+        try {
+            Gson gson = new GsonBuilder().create();
+            subscriptionItem = gson.fromJson(bundle.getString("Subscription"), SubscriptionItem.class);
+            note = subscriptionItem.getNote();
+            name = subscriptionItem.getName();
+            description = subscriptionItem.getDescription();
+            period = subscriptionItem.getPeriod();
+            every = subscriptionItem.getEvery();
+            currency = subscriptionItem.getCurrency();
+            price = subscriptionItem.getPrice();
+            serializedDate = subscriptionItem.getDate();
+            date = gson.fromJson(serializedDate, Calendar.class);
+        } catch (NullPointerException ignored) {
+
+        }
     }
 
     public void changeExtend() {
@@ -41,16 +60,26 @@ public class NewSubscriptionFragmentViewModel extends ViewModel {
         if (Boolean.TRUE.equals(shouldExtend.getValue())) {
             Gson gson = new GsonBuilder().create();
             serializedDate = gson.toJson(date);
-            SubscriptionDBRepository.insert(context, new SubscriptionItem(
-                    name,
-                    description,
-                    every,
-                    period,
-                    price,
-                    currency,
-                    serializedDate
-            ));
-            return true;
+            try {
+                if (!bundle.isEmpty()) {
+                    SubscriptionItem newSub = new SubscriptionItem(name, description, every, period, price, currency, note, serializedDate);
+                    newSub.id = subscriptionItem.id;
+                    SubscriptionDBRepository.update(context, newSub);
+                    return true;
+                }
+            } catch (NullPointerException nullPointerException) {
+                SubscriptionDBRepository.insert(context, new SubscriptionItem(
+                        name,
+                        description,
+                        every,
+                        period,
+                        price,
+                        currency,
+                        note,
+                        serializedDate
+                ));
+                return true;
+            }
         }
         return false;
     }

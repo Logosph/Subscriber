@@ -11,6 +11,11 @@
         <item>Месяц</item>
         <item>Год</item>
     </string-array>
+    <string-array name="currencies">
+        <item>RUB</item>
+        <item>USD</item>
+        <item>EUR</item>
+    </string-array>
     <string name="period">Период</string>
     <string name="day">День</string>
     <string name="week">Неделя</string>
@@ -23,4 +28,8 @@
     <string name="general_information">Общая информация</string>
     <string name="add_subscription">Добавить подписку</string>
     <string name="first_payment_date">Дата первого платежа</string>
+    <string name="subscribes">Подписки</string>
+    <string name="first_payment_date_is">"Дата первого платежа: "</string>
+    <string name="delete">Удалить</string>
+    <string name="are_you_sure">Вы уверены, что хотите удалить подписку?</string>
 </resources>

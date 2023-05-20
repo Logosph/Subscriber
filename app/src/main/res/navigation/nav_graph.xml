@@ -9,7 +9,11 @@
         android:id="@+id/newSubscriptionFragment"
         android:name="com.example.subscriber.ui.fragments.NewSubscriptionFragment"
         android:label="fragment_new_subscription"
-        tools:layout="@layout/fragment_new_subscription" />
+        tools:layout="@layout/fragment_new_subscription" >
+        <action
+            android:id="@+id/action_newSubscriptionFragment_to_mainFragment2"
+            app:destination="@id/mainFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment2"
         android:name="com.example.subscriber.ui.fragments.MainFragment"
@@ -17,6 +21,18 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment2_to_newSubscriptionFragment"
+            app:destination="@id/newSubscriptionFragment" />
+        <action
+            android:id="@+id/action_mainFragment2_to_infoFragment"
+            app:destination="@id/infoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.example.subscriber.ui.fragments.InfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/fragment_info" >
+        <action
+            android:id="@+id/action_infoFragment_to_newSubscriptionFragment"
             app:destination="@id/newSubscriptionFragment" />
     </fragment>
 </navigation>

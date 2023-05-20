@@ -14,10 +14,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.example.subscriber.R;
 import com.example.subscriber.databinding.FragmentNewSubscriptionBinding;
 import com.example.subscriber.ui.viewmodels.NewSubscriptionFragmentViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -29,13 +32,39 @@ public class NewSubscriptionFragment extends Fragment {
     FragmentNewSubscriptionBinding binding;
     NewSubscriptionFragmentViewModel viewModel;
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-    Boolean dateChosen = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentNewSubscriptionBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(NewSubscriptionFragmentViewModel.class);
+        viewModel.bundle = getArguments();
+        viewModel.getFromBundle();
+
+        try {
+            Gson gson = new GsonBuilder().create();
+
+            binding.noteTextFieldInput.setText(viewModel.subscriptionItem.getNote());
+            binding.descriptionTextFieldInput.setText(viewModel.subscriptionItem.getDescription());
+            binding.nameTextFieldInput.setText(viewModel.subscriptionItem.getName());
+            binding.pricing.setText(String.valueOf(viewModel.subscriptionItem.getPrice()));
+            binding.everyTextFieldInput.setText(String.valueOf(viewModel.subscriptionItem.getEvery()));
+            binding.periodSpinnerInput.setText(viewModel.subscriptionItem.getPeriod());
+            binding.currenciesSpinnerInput.setText(viewModel.subscriptionItem.getCurrency());
+            Date date = new Date(gson.fromJson(viewModel.subscriptionItem.getDate(), Calendar.class).getTimeInMillis());
+            SimpleDateFormat cts = new SimpleDateFormat("dd.MM.yyyy");
+            binding.dateButton.setText(String.format(
+                    "First payment date is: %s",
+                    cts.format(date)
+            ));
+            viewModel.dateChanged = true;
+            viewModel.date = gson.fromJson(viewModel.subscriptionItem.getDate(), Calendar.class);
+
+            viewModel.changeExtend();
+        } catch (NullPointerException ignored) {
+
+        }
+
 
         // Set up start state of button
         binding.confirmButton.shrink();
@@ -154,13 +183,14 @@ public class NewSubscriptionFragment extends Fragment {
                     .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                     .build();
 
-            datePicker.show(getParentFragmentManager(), "First payment date picker");
+            datePicker.show(getParentFragmentManager(), String.valueOf(R.string.first_payment_date_is));
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 SimpleDateFormat fromDatePicker = new SimpleDateFormat("dd MMM yyyy");
                 SimpleDateFormat calendarToString = new SimpleDateFormat("dd.MM.yyyy");
                 String date = datePicker.getHeaderText();
                 try {
                     calendar.setTime(fromDatePicker.parse(date));
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -177,7 +207,7 @@ public class NewSubscriptionFragment extends Fragment {
         });
         binding.confirmButton.setOnClickListener(v -> {
             if (viewModel.onAddSubscription(getContext())) {
-                Navigation.findNavController(v).popBackStack();
+                Navigation.findNavController(v).navigate(R.id.action_newSubscriptionFragment_to_mainFragment2);
             }
 
         });

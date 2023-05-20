@@ -1,7 +1,6 @@
 package com.example.subscriber.ui.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.subscriber.R;
 import com.example.subscriber.data.db.SubscriptionDB;
 import com.example.subscriber.data.db.SubscriptionDao;
 import com.example.subscriber.data.db.SubscriptionItem;
 import com.example.subscriber.databinding.FragmentMainBinding;
+import com.example.subscriber.ui.adapters.ListSubscribersAdapter;
 
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class MainFragment extends Fragment {
     }
 
     private void onLoaded(List<SubscriptionItem> subs) {
-        for (int i = 0; i < subs.size(); i++) {
-            Log.d("Database", subs.get(i).toString());
-        }
+        ListSubscribersAdapter adapter = new ListSubscribersAdapter(subs, getView());
+        binding.recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.recycler.setAdapter(adapter);
     }
 }

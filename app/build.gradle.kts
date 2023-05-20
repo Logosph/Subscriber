@@ -36,6 +36,10 @@ android {
 dependencies {
     val navVersion = "2.5.3"
     val room_version = "2.5.1"
+    val core_version = "1.6.0"
+
+    // For notifications
+    implementation("androidx.core:core-ktx:$core_version")
 
     // Reactivex java
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")

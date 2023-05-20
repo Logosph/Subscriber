@@ -6,8 +6,6 @@ import com.example.subscriber.data.db.SubscriptionDB;
 import com.example.subscriber.data.db.SubscriptionDao;
 import com.example.subscriber.data.db.SubscriptionItem;
 
-import io.reactivex.Scheduler;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SubscriptionDBRepository {
@@ -20,6 +18,26 @@ public class SubscriptionDBRepository {
 
         subscriptionDao
                 .insert(subscriptionItem)
+                .subscribeOn(Schedulers.io())
+                .subscribe(() -> {});
+    }
+
+    public static void delete(Context context, Integer id) {
+        subscriptionDB = SubscriptionDB.getInstance(context);
+        subscriptionDao = subscriptionDB.subscriptionDao();
+
+        subscriptionDao
+                .delete(id)
+                .subscribeOn(Schedulers.io())
+                .subscribe(() -> {});
+    }
+
+    public static void update(Context context, SubscriptionItem subscriptionItem) {
+        subscriptionDB = SubscriptionDB.getInstance(context);
+        subscriptionDao = subscriptionDB.subscriptionDao();
+
+        subscriptionDao
+                .update(subscriptionItem)
                 .subscribeOn(Schedulers.io())
                 .subscribe(() -> {});
     }

@@ -6,16 +6,18 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "subscription_table")
 public class SubscriptionItem {
     @PrimaryKey(autoGenerate = true)
-    int id;
+    public int id;
     private final String name;
     private final String description;
     private final Integer every;
     private final String period;
     private final Double price;
     private final String currency;
-    private final String note;
 
-    public SubscriptionItem(String name, String description, Integer every, String period, Double price, String currency, String note) {
+    private final String note;
+    private final String date;
+
+    public SubscriptionItem(String name, String description, Integer every, String period, Double price, String currency, String note, String date) {
         this.name = name;
         this.description = description;
         this.every = every;
@@ -23,6 +25,7 @@ public class SubscriptionItem {
         this.price = price;
         this.currency = currency;
         this.note = note;
+        this.date = date;
     }
 
     public String getName() {
@@ -51,6 +54,14 @@ public class SubscriptionItem {
 
     public String getNote() {
         return note;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
