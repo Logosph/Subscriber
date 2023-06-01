@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +17,6 @@ import com.example.subscriber.R;
 import com.example.subscriber.databinding.FragmentNewSubscriptionBinding;
 import com.example.subscriber.ui.viewmodels.NewSubscriptionFragmentViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -161,6 +159,7 @@ public class NewSubscriptionFragment extends Fragment {
             public void afterTextChanged(Editable s) {
             }
         });
+
         binding.noteTextFieldInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -175,6 +174,7 @@ public class NewSubscriptionFragment extends Fragment {
             public void afterTextChanged(Editable s) {
             }
         });
+
         binding.dateButton.setOnClickListener(v -> {
             MaterialDatePicker datePicker = MaterialDatePicker
                     .Builder
@@ -205,6 +205,7 @@ public class NewSubscriptionFragment extends Fragment {
                 viewModel.changeExtend();
             });
         });
+
         binding.confirmButton.setOnClickListener(v -> {
             if (viewModel.onAddSubscription(getContext())) {
                 Navigation.findNavController(v).navigate(R.id.action_newSubscriptionFragment_to_mainFragment2);
